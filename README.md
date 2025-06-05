@@ -27,8 +27,8 @@ Helm chart for deploying the httpbin service:
 ### 1️⃣ Clone repository:
 
 ```bash
-git clone https://github.com/your-org/your-repo.git
-cd your-repo
+git clone https://github.com/sheltso/httpbin.git
+cd httpbin
 ```
 
 2️⃣ Install chart:
