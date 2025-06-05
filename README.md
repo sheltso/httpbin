@@ -96,6 +96,8 @@ Uninstall
 helm uninstall httpbin-release -n httpbin
 ```
 
+Configuration
+
 | Parameter                                  | Default value                 |
 | ------------------------------------------ | ----------------------------- |
 | `replicaCount`                             | `3`                           |
