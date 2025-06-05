@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{.Values.namespace.name}}
+  labels:
+    managed-by: {{.Values.servicelabels.managedby}}
+    created-by: {{.Values.servicelabels.createdby}}
+    oncall.team: {{.Values.servicelabels.oncallteam}}
+    monitoring: {{.Values.servicelabels.monitoring}}
+    environment: {{.Values.servicelabels.environment}}
+    project: {{.Values.development.name}}

@@ -1,0 +1,31 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Values.networkpolicyservice.name }}
+  namespace: {{ .Values.development.name }}
+  labels:
+    managed-by: {{.Values.servicelabels.managedby}}
+    created-by: {{.Values.servicelabels.createdby}}
+    oncall.team: {{.Values.servicelabels.oncallteam}}
+    monitoring: {{.Values.servicelabels.monitoring}}
+    environment: {{.Values.servicelabels.environment}}
+    project: {{.Values.development.name}}
+spec:
+  podSelector:
+    matchLabels:
+      project: {{ .Values.development.name }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector: {}
+          podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0

@@ -1,0 +1,79 @@
+---
+namespace:
+  name: httpbin
+
+serviceaccount:
+  name: httpbin
+
+development:
+  name: httpbin
+
+container:
+  image: kennethreitz/httpbin:latest
+
+replicaCount: 3
+
+networkpolicyservice:
+  name: httpbin-networkpolicy
+
+ingreservice:
+  name: httpbin-ingress
+
+servicelabels:
+  managedby: helm
+  createdby: sre-team
+  oncallteam: sre
+  monitoring: enabled
+  environment: production
+
+autoscaling:
+  minReplicas: 3
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 90
+  targetMemoryUtilizationPercentage: 90
+
+svc:
+  port: 80
+  targetPort: 80
+
+resourceslimit:
+  resources:
+    requests:
+      cpu: 1m
+      memory: 50Mi
+    limits:
+      memory: 100Mi
+
+livenessProbe:
+  httpGet:
+    path: /status/200
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 2
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    scheme: HTTP
+    path: /get
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 20
+  timeoutSeconds: 2
+  successThreshold: 1
+  failureThreshold: 3
+
+securityContext:
+  allowPrivilegeEscalation: false
+  privileged: false
+  capabilities:
+    drop:
+      - ALL
+    add: ["NET_ADMIN"]
+
+  # runAsNonRoot: true
+  # readOnlyRootFilesystem: true
+  # runAsUser: 10001
+  # runAsGroup: 10001

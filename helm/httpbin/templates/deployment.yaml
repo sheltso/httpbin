@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.development.name}}-deployment
+  labels:
+    app: {{.Values.development.name}}-deployment
+    managed-by: {{.Values.servicelabels.managedby}}
+    created-by: {{.Values.servicelabels.createdby}}
+    oncall.team: {{.Values.servicelabels.oncallteam}}
+    monitoring: {{.Values.servicelabels.monitoring}}
+    environment: {{.Values.servicelabels.environment}}
+    project: {{.Values.development.name}}
+  namespace: {{.Values.development.name}}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      project: {{.Values.development.name}}
+  template:
+    metadata:
+      labels:
+        project: {{.Values.development.name}}
+        managed-by: {{.Values.servicelabels.managedby}}
+        created-by: {{.Values.servicelabels.createdby}}
+        oncall.team: {{.Values.servicelabels.oncallteam}}
+        monitoring: {{.Values.servicelabels.monitoring}}
+        environment: {{.Values.servicelabels.environment}}
+    spec:
+      serviceAccountName: {{.Values.serviceaccount.name}}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              project: {{.Values.development.name}}
+      containers:
+        - name: {{.Values.development.name}}
+          image: {{.Values.container.image}}
+          imagePullPolicy: Always
+          resources:
+          {{- toYaml .Values.resourceslimit.resources | nindent 12 }}
+          livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 12 }}
+          ports:
+            - containerPort: {{.Values.svc.port}}
+      restartPolicy: Always

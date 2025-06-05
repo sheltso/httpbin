@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.development.name}}-service
+  namespace: {{.Values.development.name}}
+  labels:
+    managed-by: {{.Values.servicelabels.managedby}}
+    created-by: {{.Values.servicelabels.createdby}}
+    oncall.team: {{.Values.servicelabels.oncallteam}}
+    monitoring: {{.Values.servicelabels.monitoring}}
+    environment: {{.Values.servicelabels.environment}}
+    project: {{.Values.development.name}}
+spec:
+  selector:
+    project: {{.Values.development.name}}
+  ports:
+    - protocol: TCP
+      port: {{.Values.svc.port}}
+      targetPort: {{.Values.svc.targetPort}}
+  type: ClusterIP

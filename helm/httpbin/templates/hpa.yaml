@@ -1,0 +1,33 @@
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{.Values.development.name}}-hpa
+  namespace: {{.Values.development.name}}
+  labels:
+    managed-by: {{.Values.servicelabels.managedby}}
+    created-by: {{.Values.servicelabels.createdby}}
+    oncall.team: {{.Values.servicelabels.oncallteam}}
+    monitoring: {{.Values.servicelabels.monitoring}}
+    environment: {{.Values.servicelabels.environment}}
+    project: {{.Values.development.name}}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{.Values.development.name}}-deployment
+  minReplicas: {{.Values.autoscaling.minReplicas}}
+  maxReplicas: {{.Values.autoscaling.maxReplicas}}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{.Values.autoscaling.targetCPUUtilizationPercentage}}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{.Values.autoscaling.targetMemoryUtilizationPercentage}}
